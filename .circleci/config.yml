@@ -22,6 +22,10 @@ jobs:
     steps:
       - run:
           command: ls /home/circleci/project
+      - run:
+          command: ls ~/
+      - run:
+          command: ls ~/repo/
 
       - checkout
 
