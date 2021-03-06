@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - run:
-          command: ls /home/circleci/
+          command: ls /home/circleci/project
 
       - checkout
 
