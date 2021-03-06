@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - run:
-          command: ls /home/circleci/aimachine-server/src/
+          command: ls /home/circleci/
 
       - checkout
 
