@@ -11,9 +11,6 @@ jobs:
       TERM: dumb
 
     steps:
-      - run:
-          command: ls ~/repo
-
       - checkout
 
       - restore_cache:
