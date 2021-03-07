@@ -15,17 +15,7 @@ class BoardTest {
     }
 
     @Test
-    fun setFieldValue_valueInBoardScope_valueSet() {
-        val board = Board()
-        board.setFieldValue(0, 0, 1)
-        board.setFieldValue(1, 2, -1)
-        board.setFieldValue(2, 0, -1)
-        val expectedFieldValues = arrayOf(intArrayOf(1, 0, 0), intArrayOf(0, 0, -1), intArrayOf(-1, 0, 0))
-        assertThat(board.getAllFieldValues()).isEqualTo(expectedFieldValues)
-    }
-
-    @Test
-    fun setFieldValue_valueOutsideBoardScope_exceptionThrown() {
+    fun setFieldValue_valueInBoardScope_returnsCorrectValues() {
         val board = Board()
         board.setFieldValue(0, 0, 1)
         board.setFieldValue(1, 2, -1)
@@ -37,15 +27,13 @@ class BoardTest {
     @Test
     fun isFieldAvailable() {
         val board = Board()
-        board.setFieldValue(0, 0, 1)
-        board.setFieldValue(1, 2, -1)
-        board.setFieldValue(2, 0, -1)
-        val expectedFieldValues = arrayOf(intArrayOf(1, 0, 0), intArrayOf(0, 0, -1), intArrayOf(-1, 0, 0))
-        assertThat(board.getAllFieldValues()).isEqualTo(expectedFieldValues)
+        assertThat(board.isFieldAvailable(1, 2)).isTrue
+        board.setFieldValue(1, 2, 1)
+        assertThat(board.isFieldAvailable(1, 2)).isFalse
     }
 
     @Test
-    fun getAvailableFieldIndices() {
+    fun getAvailableFieldIndices_someValuesSet_returnsCorrectIndices() {
         val board = Board()
         with(board) {
             setFieldValue(0, 0, 1)
@@ -59,7 +47,7 @@ class BoardTest {
     }
 
     @Test
-    fun clearFields() {
+    fun clearFields_someValuesSet_returnsEmptyBoard() {
         val board = Board()
         with(board) {
             setFieldValue(0, 0, -1)
