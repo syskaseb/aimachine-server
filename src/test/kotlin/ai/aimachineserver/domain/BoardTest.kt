@@ -4,47 +4,70 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
-class Board(
-    private val allFieldValues: Array<IntArray> = Array(BOARD_SIZE) { IntArray(BOARD_SIZE) { BLANK_VALUE } }
-) {
-    private companion object {
-        const val BOARD_SIZE = 3
-        const val BLANK_VALUE = 0
-    }
-
-    fun getAllFieldValues() = allFieldValues
-
-    fun setFieldValue(rowIndex: Int, colIndex: Int, fieldValue: Int) {
-        allFieldValues[rowIndex][colIndex] = fieldValue
-    }
-
-    fun getAvailableFieldIndices(): List<Pair<Int, Int>> {
-        val availableFieldIndices = mutableListOf<Pair<Int, Int>>()
-        allFieldValues.forEachIndexed { rowIndex, row ->
-            row.forEachIndexed { colIndex, fieldValue ->
-                if (fieldValue == BLANK_VALUE) {
-                    availableFieldIndices.add(Pair(rowIndex, colIndex))
-                }
-            }
-        }
-        return availableFieldIndices
-    }
-
-    fun isFieldAvailable(rowIndex: Int, colIndex: Int) = allFieldValues[rowIndex][colIndex] == BLANK_VALUE
-
-    fun clearAllFields() = allFieldValues.forEachIndexed { rowIndex, row ->
-        row.indices.forEach { colIndex ->
-            allFieldValues[rowIndex][colIndex] = BLANK_VALUE
-        }
-    }
-}
-
 @SpringBootTest
 class BoardTest {
 
+    private val emptyBoardFields = Array(3) { IntArray(3) { 0 } }
+
     @Test
     fun init_noValuePassed_allFieldsBlank() {
+        assertThat(Board().getAllFieldValues()).isEqualTo(emptyBoardFields)
+    }
+
+    @Test
+    fun setFieldValue_valueInBoardScope_valueSet() {
         val board = Board()
-        assertThat(board.getAllFieldValues()).isEqualTo(Array(3) { IntArray(3) { 0 } })
+        board.setFieldValue(0, 0, 1)
+        board.setFieldValue(1, 2, -1)
+        board.setFieldValue(2, 0, -1)
+        val expectedFieldValues = arrayOf(intArrayOf(1, 0, 0), intArrayOf(0, 0, -1), intArrayOf(-1, 0, 0))
+        assertThat(board.getAllFieldValues()).isEqualTo(expectedFieldValues)
+    }
+
+    @Test
+    fun setFieldValue_valueOutsideBoardScope_exceptionThrown() {
+        val board = Board()
+        board.setFieldValue(0, 0, 1)
+        board.setFieldValue(1, 2, -1)
+        board.setFieldValue(2, 0, -1)
+        val expectedFieldValues = arrayOf(intArrayOf(1, 0, 0), intArrayOf(0, 0, -1), intArrayOf(-1, 0, 0))
+        assertThat(board.getAllFieldValues()).isEqualTo(expectedFieldValues)
+    }
+
+    @Test
+    fun isFieldAvailable() {
+        val board = Board()
+        board.setFieldValue(0, 0, 1)
+        board.setFieldValue(1, 2, -1)
+        board.setFieldValue(2, 0, -1)
+        val expectedFieldValues = arrayOf(intArrayOf(1, 0, 0), intArrayOf(0, 0, -1), intArrayOf(-1, 0, 0))
+        assertThat(board.getAllFieldValues()).isEqualTo(expectedFieldValues)
+    }
+
+    @Test
+    fun getAvailableFieldIndices() {
+        val board = Board()
+        with(board) {
+            setFieldValue(0, 0, 1)
+            setFieldValue(0, 1, 1)
+            setFieldValue(2, 2, -1)
+            setFieldValue(2, 1, 1)
+            setFieldValue(1, 1, -1)
+        }
+        val expected = listOf(Pair(0, 2), Pair(1, 0), Pair(1, 2), Pair(2, 0))
+        assertThat(board.getAvailableFieldIndices()).isEqualTo(expected)
+    }
+
+    @Test
+    fun clearFields() {
+        val board = Board()
+        with(board) {
+            setFieldValue(0, 0, -1)
+            setFieldValue(2, 1, 1)
+        }
+        assertThat(board.getAllFieldValues()[0]).isEqualTo(intArrayOf(-1, 0, 0))
+        assertThat(board.getAllFieldValues()[2]).isEqualTo(intArrayOf(0, 1, 0))
+        board.clearAllFields()
+        assertThat(board.getAllFieldValues()).isEqualTo(emptyBoardFields)
     }
 }
