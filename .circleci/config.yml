@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  analyse-build-test:
+  build:
     docker:
       - image: circleci/openjdk:11-jdk
 
