@@ -1,12 +1,24 @@
-version: 2.1
+version: 2
 
 workflows:
-  build_and_test:
+  lint-build-test:
     jobs:
-      - build
-      - test
+      - lint
+      - build:
+          requires:
+            - lint
+      - test:
+          requires:
+            - build
 
 jobs:
+  lint:
+    docker:
+      - image: circleci/openjdk:11-jdk
+    steps:
+      - checkout
+      - run: gradle ktlintCheck
+
   build:
     docker:
       - image: circleci/openjdk:11-jdk
@@ -38,4 +50,4 @@ jobs:
       - image: circleci/openjdk:11-jdk
     steps:
       - checkout
-      - run: gradle check
+      - run: gradle test
