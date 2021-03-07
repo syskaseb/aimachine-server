@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class AimachineServerApplication
 
 fun main(args: Array<String>) {
-	runApplication<AimachineServerApplication>(*args)
+    runApplication<AimachineServerApplication>(*args)
 }
